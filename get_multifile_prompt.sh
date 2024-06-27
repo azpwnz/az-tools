@@ -1,21 +1,40 @@
 #!/bin/bash
 
-# Array of file names
-file_names=("$@")
+# Check if the first argument is the option to search in subdirectories
+search_in_subdirs=$1
+shift # Remove the first argument from the list
+
+# Array of file names (patterns)
+file_patterns=("$@")
 
 # Initialize the string s
 s=""
 
-# Loop through each file name
-for file_name in "${file_names[@]}"; do
-    if [[ -f "$file_name" ]]; then
-        # Read the file contents
-        file_contents=$(cat "$file_name")
-        echo "File found: $file_name"
-        # Append the formatted string to s
-        s+="\`\`\`${file_name}\n${file_contents}\`\`\`\n"
+# Function to search files based on the given pattern
+search_files() {
+    local pattern=$1
+    if [[ "$search_in_subdirs" == "-r" ]]; then
+        # Find files in the current directory and subdirectories matching the pattern
+        find . -type f -name "$pattern" 2>/dev/null
     else
-        echo "File not found: $file_name"
+        # Look for files in the current directory only matching the pattern
+        find . -maxdepth 1 -type f -name "$pattern" 2>/dev/null
+    fi
+}
+
+# Loop through each file pattern
+for pattern in "${file_patterns[@]}"; do
+    found_files=$(search_files "$pattern")
+    if [[ -z "$found_files" ]]; then
+        echo "No files found for pattern: $pattern"
+    else
+        for file in $found_files; do
+            # Read the file contents
+            file_contents=$(cat "$file")
+            echo "File found: $file"
+            # Append the formatted string to s
+            s+="\`\`\`${file}\n${file_contents}\`\`\`\n"
+        done
     fi
 done
 
