@@ -50,7 +50,7 @@ You can now use the `gmfp` command to run the script. Here are some examples:
 - **Search only in the current directory for `.tsx` files:**
 
     ```sh
-    gmfp -n "*.tsx"
+    gmfp "*.tsx"
     ```
 
 - **Search in the current directory and all subdirectories for `.tsx` files:**
@@ -65,10 +65,16 @@ You can now use the `gmfp` command to run the script. Here are some examples:
     gmfp -r "*.tsx" "*.css"
     ```
 
-- **Search in the current directory and all subdirectories for all files:**
+- **Search for all files in the current directory only:**
 
     ```sh
-    gmfp -r "*"
+    gmfp
+    ```
+
+- **Search for all files in the current directory and its subdirectories:**
+
+    ```sh
+    gmfp -r
     ```
 
 ### Example
